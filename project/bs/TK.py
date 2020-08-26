@@ -154,9 +154,8 @@ class TK:
             w_check = False
             while yul_cnt < 20:
                 yul_cnt = yul_cnt + 1
-                gooyuk = zone_seat_return(gu_, yul_cnt)
-                zhasuk = "[title*='" + ch_ + "석']"
-                imgs = driver.find_elements(By.CSS_SELECTOR, "img.stySeat" + gooyuk + zhasuk)
+                gooyuk = zone_seat_return(ch_, gu_, yul_cnt)
+                imgs = driver.find_elements(By.CSS_SELECTOR, "img.stySeat" + gooyuk)
 
                 for i in imgs:
                     i.click()
@@ -226,17 +225,17 @@ class TK:
 
         select.select_by_index((len(select.options) - 1))
 
-    def seat_title_checking1(self, zone, seat):
-        return "[title*='" + zone + "구역 " + str(seat) + "열']"
+    def seat_title_checking1(self, ch_, zone, seat):
+        return "[title*='" + ch_ + "석'][title*='" + zone + "구역 " + str(seat) + "열']"
 
-    def seat_title_checking2(self, zone, seat):
-        return "[title*='" + zone + "구역" + str(seat) + "열']"
+    def seat_title_checking2(self, ch_, zone, seat):
+        return "[title*='" + ch_ + "석'][title*='" + zone + "구역" + str(seat) + "열']"
 
-    def seat_title_checking3(self, zone, seat):
-        return "[title*='" + zone + "블럭" + str(seat) + "열']"
+    def seat_title_checking3(self, ch_,  zone, seat):
+        return "[title*='" + ch_ + "석'][title*='" + zone + "블럭" + str(seat) + "열']"
 
-    def seat_title_checking4(self, zone, seat):
-        return "[title*='-" + str(seat) + "열']"
+    def seat_title_checking4(self, ch_, zone, seat):
+        return "[title*='" + ch_ + "석'][title*='-" + str(seat) + "열']"
 
-    def seat_title_checking5(self, zone, seat):
-        return "[title*='-" + chr(64 + seat) + "열']"
+    def seat_title_checking5(self, ch_, zone, seat):
+        return "[title*='" + ch_ + "석'][title*='-" + chr(64 + seat) + "열']"
