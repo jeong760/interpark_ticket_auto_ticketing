@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import Select
 class TK:
 
     def __init__(self):
-        self.driver = webdriver.Chrome('./chromedriver.exe')
+        self.driver = None
         self.level = ""
         self.p_cnt = ""
         self.zone = ""

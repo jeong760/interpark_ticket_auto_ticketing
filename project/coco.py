@@ -1,6 +1,6 @@
 import string, time, random, requests
 from PyQt5 import QtCore, QtGui, QtWidgets
-from project.bs import TK
+from project import TK
 from apscheduler.schedulers import background as b
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers import interval as i
