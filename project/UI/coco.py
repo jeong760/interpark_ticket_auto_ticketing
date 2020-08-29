@@ -6,8 +6,8 @@ from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers import interval as i
 from apscheduler.triggers import cron as c
 
-
 class Ui_Dialog(object):
+    global tk, sched
 
     def __init__(self, dialog):
         self.label_17 = QtWidgets.QLabel(dialog)
@@ -46,10 +46,6 @@ class Ui_Dialog(object):
         self.tikecting_btn2 = QtWidgets.QPushButton(dialog)
         self.reservationStart_btn = QtWidgets.QPushButton(dialog)
         self.reservatoin_stop_btn = QtWidgets.QPushButton(dialog)
-
-        self.tk = TK.TK()
-        self.while_check = True
-        self.sched = b.BackgroundScheduler()
 
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -219,30 +215,42 @@ class Ui_Dialog(object):
         self.label_17.setText(_translate("Dialog", "PW"))
 
     def open_nterpark(self):
+        global tk
         try:
-            self.tk.open_window()
-            self.tk.login(self.id_txt.text(), self.pw_txt.text())
+            tk = TK.TK()
+            tk.open_window()
+            tk.login(self.id_txt.text(), self.pw_txt.text())
+
         except Exception as e:  # 모든 예외의 에러 메시지를 출력할 때는 Exception을 사용
             print('예외가 발생했습니다.', e)
 
     def start_Ticketing(self):
+        global tk
         try:
-            self.tk.location_page2(self.goodsCode_txt.text())
-            self.tk.location_page(self.yyyy_txt.text(), self.MM_txt.text(), self.dd_txt.text(), self.hh_txt.text(),
-                                self.mm_txt.text(), self.zone_txt.text(), self.seat_txt.text(), self.ticketCount_txt.text())
+            tk.location_page2(self.goodsCode_txt.text())
+            tk.location_page(self.goodsCode_txt.text(), self.yyyy_txt.text(), self.MM_txt.text(),
+                             self.dd_txt.text(), self.hh_txt.text(), self.mm_txt.text(),
+                             self.zone_txt.text(), self.seat_txt.text(), self.ticketCount_txt.text())
+
         except Exception as e:  # 모든 예외의 에러 메시지를 출력할 때는 Exception을 사용
             print('예외가 발생했습니다.', e)
 
     def start_Ticketing_no(self):
+        global tk
         try:
-            self.tk.location_page(self.yyyy_txt.text(), self.MM_txt.text(), self.dd_txt.text(), self.hh_txt.text(),
-                               self.mm_txt.text(), self.zone_txt.text(), self.seat_txt.text(), self.ticketCount_txt.text())
+            tk.location_page(self.goodsCode_txt.text(), self.yyyy_txt.text(), self.MM_txt.text(),
+                             self.dd_txt.text(), self.hh_txt.text(), self.mm_txt.text(),
+                             self.zone_txt.text(), self.seat_txt.text(), self.ticketCount_txt.text())
+
         except Exception as e:  # 모든 예외의 에러 메시지를 출력할 때는 Exception을 사용
             print('예외가 발생했습니다.', e)
 
     def start_Ticketing2(self):
+        global while_check
         try:
-            while self.while_check:
+            print("움직였다")
+            while_check = True
+            while while_check:
                 random_string = "".join([random.choice(string.ascii_letters) for _ in range(10)])
                 res = requests.get('https://ticket.interpark.com/' + random_string + 'asp')
                 headers = res.headers.get('Date').split(' ')
@@ -250,31 +258,37 @@ class Ui_Dialog(object):
                 h = int(hmd[0]) + 9
                 if h > 24:
                     h = h - 24
-                # print(str(h) + " " + self.re_hh_txt.text() + " " + hmd[1] + " " + self.re_mm_txt.text())
+                #print(str(h) + " " + self.re_hh_txt.text() + " " + hmd[1] + " " + self.re_mm_txt.text())
                 if str(h) == self.re_hh_txt.text() and hmd[1] == self.re_mm_txt.text():
                     while_check = False
                     self.start_Ticketing()
                 time.sleep(0.5)
+
         except Exception as e:  # 모든 예외의 에러 메시지를 출력할 때는 Exception을 사용
             print('예외가 발생했습니다.', e)
         finally:
             res.close()
 
     def start_e_Ticketing(self):
+        global sched
         try:
             print("예약 시작")
+            sched = b.BackgroundScheduler()
             trigger = OrTrigger([
                 c.CronTrigger(hour=self.re_hh_txt.text(), minute=self.re_mm_txt.text())
-                # i.IntervalTrigger(seconds=0.5)
+                #i.IntervalTrigger(seconds=0.5)
             ])
-            self.sched.add_job(self.start_Ticketing2, trigger)
-            self.sched.start()
+
+            sched.add_job(self.start_Ticketing2, trigger)
+            sched.start()
         except Exception as e:
             print('예외 맨', e)
 
     def stop_e_Ticketing(self):
+        global while_check
         try:
-            self.sched.shutdown()
-            self.while_check = False
+            sched.shutdown()
+            while_check = False
+            print("예약중단")
         except Exception as e:
             print('예외 맨2', e)
